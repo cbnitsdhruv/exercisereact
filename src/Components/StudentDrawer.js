@@ -5,34 +5,33 @@ const { Option } = Select;
 const StudentDrawer = ({
   visible,
   onClose,
-  _formArray,
-  formArray,
   editData,
+  onSubmit, 
+  forLocalData  
 }) => {
-  // const [name , setName] = useState();
-  // const [age , setAge] = useState();
-  // const [address , setAddress] = useState();
-  // const [phoneNumber , setPhoneNumber ] = useState();
-  // const [gender, setGender] = useState();
-
+  
   const [form] = Form.useForm();
+  useEffect(()=>{
+  if(editData){
+    form.setFieldsValue(
+      {
+      name: editData.name,
+      age: editData.age,
+      address:editData.address,
+      phone:editData.phone,
+      gender:editData.gender
+      }
+    )
+  }
+  },[editData,])
 
-  // useEffect(()=>{
-  // console.log(formArray,"sdfsgsd");
-  // localStorage.setItem('formData',JSON.stringify(formArray));
-  // },[formArray])
-
-  const Submit = () => {
-    form.validateFields().then((values) => {
-      console.log("ppp", values);
-      _formArray([...formArray, values]);
+  const submit = () => {
+    form.validateFields().then((values) => {  
+      onSubmit(values);        
+     // localStorage.setItem('formData',JSON.stringify(values)) 
       form.resetFields();
     });
   };
-
-  // const CheckValidation = (e) => {
-
-  // }
 
   return (
     <>
@@ -45,7 +44,7 @@ const StudentDrawer = ({
           paddingBottom: 80,
         }}
       >
-        <Form form={form} layout="vertical" onFinish={Submit}>
+        <Form form={form} layout="vertical" onFinish={submit} initialValues={{gender:'Male'}}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -53,17 +52,16 @@ const StudentDrawer = ({
                 label="Name"
                 rules={[
                   {
+                    type:"text",
+                    message:'Please Enter Text only'
+                  },
+                  {
                     required: true,
-                    message: "Please enter Name",
-                    type: "text",
+                    message: "Please Enter Name"
                   },
                 ]}
               >
-                <Input
-                  placeholder="Please enter Your name"
-                  defaultValue={editData.name}
-                //   onChange={(e) => CheckValidation(e.target.value)}
-                />
+                <Input placeholder="Please Enter Your Name"  />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -71,15 +69,15 @@ const StudentDrawer = ({
                 name="age"
                 label="Age"
                 rules={[
+                  
                   {
                     required: true,
-                    message: "Please enter Age",
+                    message: "Please Enter Age",
                   },
                 ]}
               >
                 <Input
-                  placeholder="Please enter Age"
-                  defaultValue={editData.age}
+                  placeholder="Please Enter Age"
                 />
               </Form.Item>
             </Col>
@@ -91,14 +89,17 @@ const StudentDrawer = ({
                 label="Address"
                 rules={[
                   {
+                    type:"text",
+                    message:'Please Enter Text only'
+                  },
+                  {
                     required: true,
-                    message: "Please enter Address",
+                    message: "Please Enter Address",
                   },
                 ]}
               >
                 <Input
-                  placeholder="Please enter Address"
-                  defaultValue={editData.address}
+                  placeholder="Please Enter Address"
                 />
               </Form.Item>
             </Col>
@@ -106,16 +107,15 @@ const StudentDrawer = ({
               <Form.Item
                 name="phone"
                 label="Phone No."
-                rules={[
+                rules={[                  
                   {
                     required: true,
-                    message: "Please enter Number",
+                    message: "Please Enter Number",
                   },
                 ]}
               >
                 <Input
-                  placeholder="Please enter Phone No."
-                  defaultValue={editData.phone}
+                  placeholder="Please Enter Phone No."
                 />
               </Form.Item>
             </Col>
@@ -128,14 +128,12 @@ const StudentDrawer = ({
                 rules={[
                   {
                     required: true,
-                    message: "Please select Your Gender",
+                    message: "Please Select Your Gender",
                   },
                 ]}
               >
                 <Select
-                  placeholder="Please select gender"
-                  value="Male"
-                  defaultValue={editData.gender}
+                  placeholder="Please Select gender"
                 >
                   <Option value="Male">Male</Option>
                   <Option value="Female">Female</Option>
@@ -148,7 +146,7 @@ const StudentDrawer = ({
           <Space className="justify-end w-100">
             <Button htmlType="reset">Reset</Button>
             <Button htmlType="submit" type="primary">
-              Submit
+              submit
             </Button>
           </Space>
         </Form>
